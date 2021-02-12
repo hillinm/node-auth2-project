@@ -1,24 +1,28 @@
 const db = require("../../database/connection.js");
 
 module.exports = {
-  find,
-  create,
-  findByUsername,
-};
-
-function find() {
-  return db('users');
-}
-
-function create(user) {
-  return db
-  .insert(user)
-  .into('users')
-  .then((response) => {
-    return db.select('*').from('users').where({ username }).first();
-  });
-}
-
-function findByUsername(username) {
-  return db.select('*').from('users').where({ username }).first();
-}
+    add,
+    find,
+    findBy,
+    findById
+  };
+  
+  function find() {
+    return db("users").select("id", "username", "department");
+  }
+  
+  function findBy(filter) {
+    return db("users").where(filter).select("id", "username", "department");
+  }
+  
+  async function add(user) {
+    const [id] = await db("users").insert(user, "id");
+  
+    return findById(id);
+  }
+  
+  function findById(id) {
+    return db("users")
+      .where({ id })
+      .first();
+  }
